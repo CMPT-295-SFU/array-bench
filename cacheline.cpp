@@ -51,15 +51,13 @@ public:
 
 int *Setup::a = nullptr;
 
-static void BM_RowMajor(benchmark::State &state) {
+static void BM_Cacheline(benchmark::State &state) {
   int *a = Setup::PerformSetup(state);
   int local;
   //  a = (int *)malloc(state.range(0) * state.range(0) * sizeof(int));
   for (auto _ : state) {
-    for (int i = 0; i < state.range(0); i++) {
-      for (int j = 0; j < 256; j++) {
-        *(a + (i * 256 + j)) = 10;
-      }
+    for (int i = 0; i < MAX_ROWS * 256; i += state.range(0)) {
+      a[i]++;
     }
     benchmark::DoNotOptimize(a);
     benchmark::DoNotOptimize(local);
@@ -70,24 +68,6 @@ static void BM_RowMajor(benchmark::State &state) {
   FlushFromDataCache(a, a + ((MAX_ROWS)-1) * 255 + 255);
 }
 
-static void BM_ColMajor(benchmark::State &state) {
-  int *a = Setup::PerformSetup(state);
-  //  a = (int *)malloc(state.range(0) * state.range(0) * sizeof(int));
-  for (auto _ : state) {
-    for (int i = 0; i < state.range(0); i++) {
-      for (int j = 0; j < 256; j++) {
-        *(a + (j * 256) + i) = 10;
-      }
-    }
-    benchmark::DoNotOptimize(a);
-  }
-  //  if (a != nullptr) {
-  // free(a);
-  // }
-  FlushFromDataCache(a, a + ((MAX_ROWS)-1) * 255 + 255);
-}
-
-BENCHMARK(BM_RowMajor)->RangeMultiplier(2)->Range(8, MAX_ROWS);
-BENCHMARK(BM_ColMajor)->RangeMultiplier(2)->Range(8, MAX_ROWS);
+BENCHMARK(BM_Cacheline)->RangeMultiplier(2)->Range(1, 128);
 
 BENCHMARK_MAIN();
