@@ -53,21 +53,21 @@ int *Setup::a = nullptr;
 
 static void BM_Cacheline(benchmark::State &state) {
   int *a = Setup::PerformSetup(state);
-  int local;
+  int *local = new int[2 << 26];
   //  a = (int *)malloc(state.range(0) * state.range(0) * sizeof(int));
   for (auto _ : state) {
-    for (int i = 0; i < MAX_ROWS * 256; i += state.range(0)) {
-      a[i]++;
+    for (int i = 0; i < (2 << 26); i += state.range(0)) {
+      local[i]++;
     }
     benchmark::DoNotOptimize(a);
     benchmark::DoNotOptimize(local);
   }
   //  if (a != nullptr) {
-  // free(a);
+  free(local);
   // }
-  FlushFromDataCache(a, a + ((MAX_ROWS)-1) * 255 + 255);
+  //  FlushFromDataCache(a, a + ((MAX_ROWS)-1) * 255 + 255);
 }
 
-BENCHMARK(BM_Cacheline)->RangeMultiplier(2)->Range(1, 128);
+BENCHMARK(BM_Cacheline)->Arg(1)->Arg(2)->Arg(4)->Arg(8)->Arg(15)->Arg(16);
 
 BENCHMARK_MAIN();

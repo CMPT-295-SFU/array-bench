@@ -1,5 +1,8 @@
 {
   "cmake.configureSettings": {
     "CMAKE_TOOLCHAIN_FILE": "/Users/ashriram/.vcpkg/scripts/buildsystems/vcpkg.cmake"
+  },
+  "files.associations": {
+    "new": "cpp"
   }
 }

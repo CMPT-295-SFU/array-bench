@@ -1,7 +1,7 @@
     cmake_minimum_required(VERSION 3.5)
 project (array-bench)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -std=c++11 -O3")
+set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -Ofast -std=c++11")
 
 set(BENCHMARKS array  roofline cacheline)
 
