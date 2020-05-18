@@ -3,7 +3,7 @@ project (array-bench)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -Ofast -std=c++11")
 
-set(BENCHMARKS array  roofline cacheline)
+set(BENCHMARKS array  roofline cacheline cache)
 
 foreach( exe ${BENCHMARKS} )
     
